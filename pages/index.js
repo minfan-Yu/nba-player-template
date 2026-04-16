@@ -168,8 +168,8 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>NBA Scout — 找出你的籃球定位</title>
-        <meta name="description" content="輸入你的身高與能力，比對 NBA 2K26 球員資料找出你最像哪位球員" />
+        <title>Your NBA Template — 找出你的NBA模板</title>
+        <meta name="description" content="輸入你的身高與能力，比對 NBA 2K26 球員資料找出你的NBA模板" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -178,8 +178,8 @@ export default function Home() {
         {/* Hero */}
         <div className={styles.hero}>
           <div className={styles.grid} />
-          <h1 className={styles.heroTitle}>NBA <span>SCOUT</span></h1>
-          <p className={styles.heroSub}>找出你最像哪位 NBA 2K26 球員 🏀</p>
+          <h1 className={styles.heroTitle}>YOUR NBA <span>TEMPLATE</span></h1>
+          <p className={styles.heroSub}>找出你的 NBA 模板</p>
           <div className={styles.countBadge}>
             <span className={styles.liveDot} />
             {count.toLocaleString()} 份球探報告已生成
