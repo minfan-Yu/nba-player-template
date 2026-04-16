@@ -152,12 +152,17 @@ function findSimilar(s, players, userHeight, n = 3) {
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
-  const { height, skills } = req.body
+  const { height, skills, positions } = req.body
   if (!height || !skills) return res.status(400).json({ error: 'Missing fields' })
 
   const s99 = toScore(skills)
   const ovr = calcOVR(s99, height)
-  const players = loadPlayers()
+  const allPlayers = loadPlayers()
+
+  // 依使用者選擇的位置篩選球員；未選則全部比對
+  const players = (positions && positions.length > 0)
+    ? allPlayers.filter(p => positions.includes(p.position))
+    : allPlayers
 
   // 更新計數器（選填：Vercel KV）
   try {

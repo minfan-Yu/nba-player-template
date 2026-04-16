@@ -27,6 +27,14 @@ const SKILLS = [
 const LEVELS = ['拉完了', 'NPC', '人上人', '頂級', '夯爆了']
 const LEVEL_COLORS = ['#e24b4a', '#ea9326', '#efc032', '#5cb85c', '#FF8C00']
 
+const POSITIONS = [
+  { code: 'PG', name: '控球後衛' },
+  { code: 'SG', name: '得分後衛' },
+  { code: 'SF', name: '小前鋒' },
+  { code: 'PF', name: '大前鋒' },
+  { code: 'C',  name: '中鋒' },
+]
+
 function getHeightPos(h) {
   if (h < 168) return '控球後衛身材（Steph、Kyrie 類型）'
   if (h < 178) return '得分後衛身材（Kobe、Iverson 類型）'
@@ -79,6 +87,7 @@ function SkillCompare({ userSkills, player }) {
 export default function Home() {
   const [height, setHeight] = useState(180)
   const [heightInput, setHeightInput] = useState('180')
+  const [positions, setPositions] = useState([])
   const [skills, setSkills] = useState(initSkills)
   const [weaknesses, setWeaknesses] = useState([])
   const [loading, setLoading] = useState(false)
@@ -107,6 +116,12 @@ export default function Home() {
     else { setHeight(v); setHeightInput(String(v)) }
   }
 
+  const togglePos = (code) => {
+    setPositions(prev =>
+      prev.includes(code) ? prev.filter(p => p !== code) : [...prev, code]
+    )
+  }
+
   const toggleWeak = (id) => {
     setWeaknesses(prev =>
       prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
@@ -125,7 +140,7 @@ export default function Home() {
       const res = await fetch('/api/report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ height, skills, weaknesses }),
+        body: JSON.stringify({ height, skills, weaknesses, positions }),
       })
       if (!res.ok) throw new Error('伺服器錯誤')
       const data = await res.json()
@@ -178,6 +193,30 @@ export default function Home() {
             </div>
             <div className={styles.heightPos}>{getHeightPos(height)}</div>
           </div>
+        </section>
+
+        {/* Positions */}
+        <section className={styles.section}>
+          <div className={styles.sectionLabel}>可打位置（可多選）</div>
+          <div className={styles.posRow}>
+            {POSITIONS.map(({ code, name }) => {
+              const active = positions.includes(code)
+              return (
+                <button
+                  key={code}
+                  className={`${styles.posBtn} ${active ? styles.posBtnActive : ''}`}
+                  onClick={() => togglePos(code)}
+                >
+                  <span className={active ? styles.posCodeActive : styles.posCode}>{code}</span>
+                  <span className={active ? styles.posNameActive : styles.posName}>{name}</span>
+                </button>
+              )
+            })}
+          </div>
+          {positions.length === 0
+            ? <p className={styles.posHint}>未選擇 → 比對全部球員</p>
+            : <p className={styles.posHint}>已選：{positions.join('、')} · 只比對這些位置的球員</p>
+          }
         </section>
 
         {/* Skills */}

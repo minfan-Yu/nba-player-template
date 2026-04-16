@@ -132,6 +132,73 @@
   line-height: 1.5;
 }
 
+/* ── Position selector ────────────────────── */
+.posRow {
+  display: flex;
+  gap: 10px;
+}
+
+.posBtn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 14px 6px;
+  background: #111;
+  border: 1.5px solid #1e1e1e;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.posBtn:hover { border-color: rgba(255,140,0,0.3); }
+
+.posBtnActive {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 14px 6px;
+  background: rgba(255,140,0,0.1);
+  border: 1.5px solid #FF8C00;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.posCode {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 1px;
+  line-height: 1;
+}
+.posCodeActive {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  color: #FF8C00;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.posName {
+  font-size: 9px;
+  color: rgba(255,255,255,0.25);
+  white-space: nowrap;
+}
+.posNameActive {
+  font-size: 9px;
+  color: rgba(255,140,0,0.7);
+  white-space: nowrap;
+}
+
+.posHint {
+  font-size: 11px;
+  color: rgba(255,255,255,0.25);
+  margin-top: 12px;
+}
+
 /* ── Skill Window ─────────────────────────── */
 .skillLegendRow {
   display: flex;
