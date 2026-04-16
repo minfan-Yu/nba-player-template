@@ -472,7 +472,6 @@
   flex: 1;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
 }
 .legendYou {
   font-family: 'Bebas Neue', sans-serif;
@@ -486,7 +485,6 @@
   color: #fff;
   letter-spacing: 1px;
   line-height: 1;
-  text-align: right;
   word-break: break-word;
 }
 
@@ -526,10 +524,6 @@
   min-width: 0;
 }
 
-/* right-side pill aligns to the right */
-.compareRow .lvPill:last-child {
-  justify-content: flex-end;
-}
 
 .lvDots {
   display: flex;
