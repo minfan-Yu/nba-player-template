@@ -81,21 +81,19 @@ function SkillCompare({ userLevels, player }) {
   return (
     <div className={styles.skillCompare}>
       <div className={styles.skillCompareLegend}>
-        <span className={styles.legendYou}>你</span>
-        <span className={styles.legendVs}>vs</span>
-        <span className={styles.legendPlayer}>{player.name}</span>
+        <div className={styles.compareLabelSpacer} />
+        <div className={styles.legendYouCol}><span className={styles.legendYou}>你</span></div>
+        <div className={styles.compareDivider} />
+        <div className={styles.legendPlayerCol}><span className={styles.legendPlayer}>{player.name}</span></div>
       </div>
       {SKILLS.map(sk => {
         const uLv = userLevels[sk.id] ?? 3
         const pLv = scoreToLevel(player.skills?.[sk.id] ?? 50)
-        const diff = uLv - pLv
         return (
           <div key={sk.id} className={styles.compareRow}>
             <div className={styles.compareLabel}>{sk.name}</div>
             <LevelPill level={uLv} />
-            <span className={`${styles.diffTag} ${diff > 0 ? styles.diffGood : diff < 0 ? styles.diffBad : styles.diffEven}`}>
-              {diff > 0 ? `+${diff}` : diff === 0 ? '=' : diff}
-            </span>
+            <div className={styles.compareDivider} />
             <LevelPill level={pLv} />
           </div>
         )
