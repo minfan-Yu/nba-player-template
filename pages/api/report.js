@@ -178,10 +178,8 @@ export default async function handler(req, res) {
   // 更新計數器：有 KV 用 KV，否則寫本地檔案
   try {
     if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
-      await fetch(`${process.env.KV_REST_API_URL}/incr/report_count`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${process.env.KV_REST_API_TOKEN}` },
-      })
+      const { kv } = await import('@vercel/kv')
+      await kv.incr('report_count')
     } else {
       incrementLocal()
     }
