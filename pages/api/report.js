@@ -123,8 +123,11 @@ function calcBadges(s) {
   ].filter(([c]) => c).map(([, n]) => n).slice(0, 5)
 }
 
-// 歐幾里德距離比對，找最相似球員
-function findSimilar(s, players, n = 3) {
+// 各位置的平均身高（cm）
+const POS_HEIGHT = { PG: 185, SG: 193, SF: 200, PF: 205, C: 211 }
+
+// 歐幾里德距離比對，找最相似球員（含身高因素）
+function findSimilar(s, players, userHeight, n = 3) {
   const keys = Object.keys(s)
   return players
     .map(p => {
@@ -135,6 +138,11 @@ function findSimilar(s, players, n = 3) {
           cnt++
         }
       }
+      // 身高差異換算：1cm ≈ 1.5 技能分單位，讓身高有合理權重但不主導結果
+      const playerH = POS_HEIGHT[p.position] ?? 198
+      const hDiff = (userHeight - playerH) * 1.5
+      sumSq += hDiff ** 2
+      cnt++
       const rms = cnt > 0 ? Math.sqrt(sumSq / cnt) : 999
       return { name: p.name, overall: p.overall, position: p.position, team: p.team, skills: p.skills, rms }
     })
@@ -168,6 +176,6 @@ export default async function handler(req, res) {
     styleTag:       calcStyleTag(s99),
     badges:         calcBadges(s99),
     skills99:       s99,
-    similarPlayers: findSimilar(s99, players, 3),
+    similarPlayers: findSimilar(s99, players, height, 3),
   })
 }
