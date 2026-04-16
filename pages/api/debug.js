@@ -1,18 +1,26 @@
+import Redis from 'ioredis'
+
 export default async function handler(req, res) {
   const info = {
-    hasKvUrl:   !!process.env.KV_REST_API_URL,
-    hasKvToken: !!process.env.KV_REST_API_TOKEN,
-    kvUrlPrefix: process.env.KV_REST_API_URL?.slice(0, 40) ?? 'undefined',
+    hasRedisUrl: !!process.env.REDIS_URL,
+    urlPrefix: process.env.REDIS_URL?.slice(0, 30) ?? 'undefined',
   }
 
+  if (!process.env.REDIS_URL) {
+    return res.status(200).json({ ...info, status: 'no REDIS_URL env var' })
+  }
+
+  const redis = new Redis(process.env.REDIS_URL)
   try {
-    const { kv } = await import('@vercel/kv')
-    const val = await kv.get('report_count')
-    info.kvGet = val
-    info.kvStatus = 'ok'
+    await redis.ping()
+    const count = await redis.get('report_count')
+    info.status = 'connected'
+    info.report_count = count
   } catch (e) {
-    info.kvStatus = 'error'
-    info.kvError = e.message
+    info.status = 'error'
+    info.error = e.message
+  } finally {
+    redis.disconnect()
   }
 
   return res.status(200).json(info)

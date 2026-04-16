@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import Redis from 'ioredis'
 
 const COUNT_FILE = path.join(process.cwd(), 'data', 'count.json')
 
@@ -12,15 +13,18 @@ function readLocal() {
 }
 
 export default async function handler(req, res) {
-  try {
-    if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
-      const { kv } = await import('@vercel/kv')
-      const count = await kv.get('report_count')
-      return res.status(200).json({ count: Number(count) || 0 })
-    }
+  if (!process.env.REDIS_URL) {
     return res.status(200).json({ count: readLocal() })
+  }
+
+  const redis = new Redis(process.env.REDIS_URL)
+  try {
+    const val = await redis.get('report_count')
+    return res.status(200).json({ count: Number(val) || 0 })
   } catch (e) {
-    console.error('count error:', e)
+    console.error('Redis get error:', e.message)
     return res.status(200).json({ count: 0 })
+  } finally {
+    redis.disconnect()
   }
 }

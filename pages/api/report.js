@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import Redis from 'ioredis'
 
 const COUNT_FILE = path.join(process.cwd(), 'data', 'count.json')
 const BASE = 25000
@@ -175,15 +176,19 @@ export default async function handler(req, res) {
     ? allPlayers.filter(p => positions.includes(p.position))
     : allPlayers
 
-  // 更新計數器：有 KV 用 KV，否則寫本地檔案
-  try {
-    if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
-      const { kv } = await import('@vercel/kv')
-      await kv.incr('report_count')
-    } else {
-      incrementLocal()
+  // 更新計數器：有 REDIS_URL 用 Redis，否則寫本地檔案
+  if (process.env.REDIS_URL) {
+    const redis = new Redis(process.env.REDIS_URL)
+    try {
+      await redis.incr('report_count')
+    } catch (e) {
+      console.error('Redis incr error:', e.message)
+    } finally {
+      redis.disconnect()
     }
-  } catch (_) {}
+  } else {
+    incrementLocal()
+  }
 
   return res.status(200).json({
     ovr,
