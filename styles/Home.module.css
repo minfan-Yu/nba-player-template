@@ -473,32 +473,49 @@
 .simMeta  { font-size: 10px; color: rgba(255,255,255,0.3); }
 
 /* ── Skill Compare ────────────────────────── */
-.skillCompare { margin-top: 4px; }
+.skillCompare { margin-top: 8px; }
 
 .skillCompareLegend {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 14px;
-  font-size: 12px;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #222;
 }
-.legendYou    { color: #FF8C00; font-weight: 700; }
-.legendVs     { color: rgba(255,255,255,0.25); }
-.legendPlayer { color: rgba(255,255,255,0.6); font-weight: 500; }
+.legendYou {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  color: #FF8C00;
+  letter-spacing: 2px;
+}
+.legendVs {
+  font-size: 13px;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 1px;
+}
+.legendPlayer {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  color: #fff;
+  letter-spacing: 1px;
+  line-height: 1;
+}
 
 .compareRow {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 7px 0;
+  gap: 10px;
+  padding: 11px 0;
   border-bottom: 1px solid #1a1a1a;
 }
 .compareRow:last-child { border-bottom: none; }
 
 .compareLabel {
-  width: 48px;
-  font-size: 11px;
-  color: rgba(255,255,255,0.4);
+  width: 56px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.5);
   flex-shrink: 0;
 }
 
@@ -507,40 +524,38 @@
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-width: 0;
 }
 
 .lvDots {
   display: flex;
-  gap: 3px;
+  gap: 4px;
   flex-shrink: 0;
 }
 
 .lvDot {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: #2a2a2a;
   flex-shrink: 0;
 }
 
 .lvPillLabel {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .diffTag {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 5px;
+  padding: 3px 8px;
+  border-radius: 6px;
   flex-shrink: 0;
   text-align: center;
-  min-width: 28px;
+  min-width: 34px;
 }
 .diffGood { color: #5cb85c; background: rgba(92,184,92,0.12); }
 .diffBad  { color: #e24b4a; background: rgba(226,75,74,0.12); }
