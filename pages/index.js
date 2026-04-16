@@ -109,7 +109,6 @@ export default function Home() {
   const [heightInput, setHeightInput] = useState('180')
   const [positions, setPositions] = useState([])
   const [skills, setSkills] = useState(initSkills)
-  const [weaknesses, setWeaknesses] = useState([])
   const [loading, setLoading] = useState(false)
   const [report, setReport] = useState(null)
   const [error, setError] = useState('')
@@ -142,12 +141,6 @@ export default function Home() {
     )
   }
 
-  const toggleWeak = (id) => {
-    setWeaknesses(prev =>
-      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
-    )
-  }
-
   const setLevel = (id, level) => {
     setSkills(prev => ({ ...prev, [id]: level }))
   }
@@ -160,7 +153,7 @@ export default function Home() {
       const res = await fetch('/api/report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ height, skills, weaknesses, positions }),
+        body: JSON.stringify({ height, skills, positions }),
       })
       if (!res.ok) throw new Error('伺服器錯誤')
       const data = await res.json()
@@ -251,24 +244,14 @@ export default function Home() {
           <p className={styles.skillLegendNote}>
             依照自身打球環境比對 NBA：
             <span>1 板凳深處</span>・<span>2 板凳球員</span>・<span>3 穩定輪替</span>・<span>4 先發</span>・<span>5 明星球員</span>
-            　·　點擊 W 標記弱點
           </p>
           <div className={styles.skillWindow}>
             {SKILLS.map(sk => {
               const lv = skills[sk.id]
-              const isWeak = weaknesses.includes(sk.id)
               const color = LEVEL_COLORS[lv - 1]
               const pct = ((lv - 1) / 4) * 100
               return (
-                <div
-                  key={sk.id}
-                  className={`${styles.skillRow} ${isWeak ? styles.skillRowWeak : ''}`}
-                >
-                  <button
-                    className={`${styles.weakDot} ${isWeak ? styles.weakDotActive : ''}`}
-                    onClick={() => toggleWeak(sk.id)}
-                    title={isWeak ? '取消弱點' : '標記弱點'}
-                  >W</button>
+                <div key={sk.id} className={styles.skillRow}>
                   <div className={styles.skillInfo}>
                     <span className={styles.skillRowName}>{sk.name}</span>
                     <span className={styles.skillRowDesc}>{sk.desc}</span>
