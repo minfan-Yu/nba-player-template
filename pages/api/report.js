@@ -181,6 +181,7 @@ export default async function handler(req, res) {
     styleTag:       calcStyleTag(s99),
     badges:         calcBadges(s99),
     skills99:       s99,
+    skillLevels:    skills,   // 原始 1-5 等級，供前端比對顯示用
     similarPlayers: findSimilar(s99, players, height, 3),
   })
 }

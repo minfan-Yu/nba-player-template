@@ -49,7 +49,35 @@ const initSkills = () => {
   return s
 }
 
-function SkillCompare({ userSkills, player }) {
+// 0-99 分反推 1-5 等級
+function scoreToLevel(score) {
+  if (score >= 88) return 5
+  if (score >= 75) return 4
+  if (score >= 59) return 3
+  if (score >= 40) return 2
+  return 1
+}
+
+function LevelPill({ level }) {
+  const color = LEVEL_COLORS[level - 1]
+  const label = LEVELS[level - 1]
+  return (
+    <div className={styles.lvPill}>
+      <div className={styles.lvDots}>
+        {[1,2,3,4,5].map(i => (
+          <span
+            key={i}
+            className={styles.lvDot}
+            style={i <= level ? { background: color } : {}}
+          />
+        ))}
+      </div>
+      <span className={styles.lvPillLabel} style={{ color }}>{label}</span>
+    </div>
+  )
+}
+
+function SkillCompare({ userLevels, player }) {
   return (
     <div className={styles.skillCompare}>
       <div className={styles.skillCompareLegend}>
@@ -58,25 +86,17 @@ function SkillCompare({ userSkills, player }) {
         <span className={styles.legendPlayer}>{player.name}</span>
       </div>
       {SKILLS.map(sk => {
-        const u = userSkills[sk.id] ?? 0
-        const p = player.skills?.[sk.id] ?? 0
-        const diff = u - p
+        const uLv = userLevels[sk.id] ?? 3
+        const pLv = scoreToLevel(player.skills?.[sk.id] ?? 50)
+        const diff = uLv - pLv
         return (
           <div key={sk.id} className={styles.compareRow}>
             <div className={styles.compareLabel}>{sk.name}</div>
-            <div className={styles.compareBarsCol}>
-              <div className={styles.barLine}>
-                <div className={styles.barFillUser} style={{ width: `${u}%` }} />
-                <span className={styles.barNum}>{u}</span>
-                <span className={`${styles.diffTag} ${diff > 0 ? styles.diffGood : diff < 0 ? styles.diffBad : styles.diffEven}`}>
-                  {diff > 0 ? `+${diff}` : diff === 0 ? '=' : diff}
-                </span>
-              </div>
-              <div className={styles.barLine}>
-                <div className={styles.barFillPlayer} style={{ width: `${p}%` }} />
-                <span className={styles.barNum}>{p}</span>
-              </div>
-            </div>
+            <LevelPill level={uLv} />
+            <span className={`${styles.diffTag} ${diff > 0 ? styles.diffGood : diff < 0 ? styles.diffBad : styles.diffEven}`}>
+              {diff > 0 ? `+${diff}` : diff === 0 ? '=' : diff}
+            </span>
+            <LevelPill level={pLv} />
           </div>
         )
       })}
@@ -323,9 +343,9 @@ export default function Home() {
                     </div>
                   ))}
                 </div>
-                {report.similarPlayers[0]?.skills && report.skills99 && (
+                {report.similarPlayers[0]?.skills && report.skillLevels && (
                   <SkillCompare
-                    userSkills={report.skills99}
+                    userLevels={report.skillLevels}
                     player={report.similarPlayers[0]}
                   />
                 )}
