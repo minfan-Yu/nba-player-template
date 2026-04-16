@@ -112,7 +112,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [report, setReport] = useState(null)
   const [error, setError] = useState('')
-  const [count, setCount] = useState(25000)
+  const [count, setCount] = useState(0)
 
   useEffect(() => {
     fetch('/api/count')
