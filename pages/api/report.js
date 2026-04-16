@@ -1,6 +1,17 @@
 import fs from 'fs'
 import path from 'path'
 
+const COUNT_FILE = path.join(process.cwd(), 'data', 'count.json')
+const BASE = 25000
+
+function incrementLocal() {
+  try {
+    let count = BASE
+    try { count = JSON.parse(fs.readFileSync(COUNT_FILE, 'utf-8')).count ?? BASE } catch {}
+    fs.writeFileSync(COUNT_FILE, JSON.stringify({ count: count + 1 }))
+  } catch {}
+}
+
 // 1-5 等級 → 0-99 分
 const LEVEL_TO_SCORE = { 1: 30, 2: 50, 3: 68, 4: 82, 5: 93 }
 
@@ -164,13 +175,15 @@ export default async function handler(req, res) {
     ? allPlayers.filter(p => positions.includes(p.position))
     : allPlayers
 
-  // 更新計數器（選填：Vercel KV）
+  // 更新計數器：有 KV 用 KV，否則寫本地檔案
   try {
     if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
       await fetch(`${process.env.KV_REST_API_URL}/incr/report_count`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${process.env.KV_REST_API_TOKEN}` },
       })
+    } else {
+      incrementLocal()
     }
   } catch (_) {}
 

@@ -24,7 +24,7 @@ const SKILLS = [
   { id: 'clutch',      name: '關鍵球',   desc: '關鍵時刻的抗壓與決策' },
 ]
 
-const LEVELS = ['板凳深處', '板凳球員', '穩定輪替', '先發', '明星球員']
+const LEVELS = ['拉完了', 'NPC', '人上人', '頂級', '夯爆了']
 const LEVEL_COLORS = ['#e24b4a', '#ea9326', '#efc032', '#5cb85c', '#FF8C00']
 
 const POSITIONS = [
@@ -248,7 +248,11 @@ export default function Home() {
               </span>
             ))}
           </div>
-          <p className={styles.skillLegendNote}>依照自身打球環境比對 NBA · 點擊 W 標記弱點</p>
+          <p className={styles.skillLegendNote}>
+            依照自身打球環境比對 NBA：
+            <span>1 板凳深處</span>・<span>2 板凳球員</span>・<span>3 穩定輪替</span>・<span>4 先發</span>・<span>5 明星球員</span>
+            　·　點擊 W 標記弱點
+          </p>
           <div className={styles.skillWindow}>
             {SKILLS.map(sk => {
               const lv = skills[sk.id]
