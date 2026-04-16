@@ -41,6 +41,42 @@ const initSkills = () => {
   return s
 }
 
+// 技能比對元件
+function SkillCompare({ userSkills, player }) {
+  return (
+    <div className={styles.skillCompare}>
+      <div className={styles.skillCompareLegend}>
+        <span className={styles.legendYou}>你</span>
+        <span className={styles.legendVs}>vs</span>
+        <span className={styles.legendPlayer}>{player.name}</span>
+      </div>
+      {SKILLS.map(sk => {
+        const u = userSkills[sk.id] ?? 0
+        const p = player.skills?.[sk.id] ?? 0
+        const diff = u - p
+        return (
+          <div key={sk.id} className={styles.compareRow}>
+            <div className={styles.compareLabel}>{sk.name}</div>
+            <div className={styles.compareBarsCol}>
+              <div className={styles.barLine}>
+                <div className={styles.barFillUser} style={{ width: `${u}%` }} />
+                <span className={styles.barNum}>{u}</span>
+                <span className={`${styles.diffTag} ${diff > 0 ? styles.diffGood : diff < 0 ? styles.diffBad : styles.diffEven}`}>
+                  {diff > 0 ? `+${diff}` : diff === 0 ? '=' : diff}
+                </span>
+              </div>
+              <div className={styles.barLine}>
+                <div className={styles.barFillPlayer} style={{ width: `${p}%` }} />
+                <span className={styles.barNum}>{p}</span>
+              </div>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 export default function Home() {
   const [height, setHeight] = useState(180)
   const [skills, setSkills] = useState(initSkills)
@@ -93,7 +129,7 @@ export default function Home() {
     <>
       <Head>
         <title>NBA Scout — 找出你的籃球定位</title>
-        <meta name="description" content="輸入你的身高與能力，AI 球探幫你分析球場定位" />
+        <meta name="description" content="輸入你的身高與能力，比對 NBA 2K26 球員資料找出你最像哪位球員" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -103,7 +139,7 @@ export default function Home() {
         <div className={styles.hero}>
           <div className={styles.grid} />
           <h1 className={styles.heroTitle}>NBA <span>SCOUT</span></h1>
-          <p className={styles.heroSub}>找出你的籃球定位 🏀</p>
+          <p className={styles.heroSub}>找出你最像哪位 NBA 2K26 球員 🏀</p>
           <div className={styles.countBadge}>
             <span className={styles.liveDot} />
             {count.toLocaleString()} 份球探報告已生成
@@ -191,7 +227,7 @@ export default function Home() {
             onClick={generate}
             disabled={loading}
           >
-            {loading ? '球探分析中...' : '生成球探報告 →'}
+            {loading ? '比對中...' : '開始比對 →'}
           </button>
           {loading && <div className={styles.progressBar}><div className={styles.progressFill} /></div>}
           {error && <p className={styles.errorMsg}>{error}</p>}
@@ -200,6 +236,7 @@ export default function Home() {
         {/* Report */}
         {report && (
           <section className={styles.reportWrap}>
+            {/* OVR Header */}
             <div className={styles.reportHeader}>
               <div className={styles.ovrRow}>
                 <span className={styles.ovrNum}>{report.ovr}</span>
@@ -209,20 +246,48 @@ export default function Home() {
               <div className={styles.reportTier}>{report.tier}</div>
               <div className={styles.reportStyle}>風格標籤：{report.styleTag}</div>
             </div>
-            <div className={styles.reportBody}>
-              <p className={styles.reportText}>{report.report}</p>
-              <div className={styles.badgesRow}>
-                {(report.badges || []).map((b, i) => (
-                  <span key={i} className={styles.badge}>🏅 {b}</span>
-                ))}
+
+            {/* Badges */}
+            {(report.badges || []).length > 0 && (
+              <div className={styles.reportBody}>
+                <div className={styles.badgesRow}>
+                  {report.badges.map((b, i) => (
+                    <span key={i} className={styles.badge}>🏅 {b}</span>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
+
+            {/* 最相似球員 */}
+            {(report.similarPlayers || []).length > 0 && (
+              <div className={styles.compareSection}>
+                <div className={styles.compareSectionTitle}>你最像的 NBA 2K26 球員</div>
+
+                <div className={styles.simRow}>
+                  {report.similarPlayers.map((p, i) => (
+                    <div key={i} className={`${styles.simCard} ${i === 0 ? styles.simCardTop : ''}`}>
+                      <div className={styles.simRank}>{i === 0 ? '最像' : `#${i + 1}`}</div>
+                      <div className={styles.simOvr}>{p.overall}</div>
+                      <div className={styles.simName}>{p.name}</div>
+                      <div className={styles.simMeta}>{p.position} · {p.team}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* 技能逐項比對（最相似的那位） */}
+                {report.similarPlayers[0]?.skills && report.skills99 && (
+                  <SkillCompare
+                    userSkills={report.skills99}
+                    player={report.similarPlayers[0]}
+                  />
+                )}
+              </div>
+            )}
           </section>
         )}
 
         <footer className={styles.footer}>
-          <p>僅供娛樂參考 · 由 Claude AI 球探驅動</p>
-          <p style={{ marginTop: 4 }}>2.0 進階版研發中 — 弱點深度分析 · 成長圖表</p>
+          <p>資料來源：NBA 2K26 · 僅供娛樂參考</p>
         </footer>
       </main>
     </>
